@@ -14,7 +14,7 @@ find_package(GLUT REQUIRED)
 
 #find_library(COCOA_LIBRARY Cocoa)
 
-add_executable(hand src/app.cpp src/Renderer.h src/Renderer.cpp src/VertexBuffer.h src/VertexBuffer.cpp src/IndexBuffer.h src/IndexBuffer.cpp)
+add_executable(hand src/app.cpp src/Renderer.h src/Renderer.cpp src/VertexBuffer.h src/VertexBuffer.cpp src/IndexBuffer.h src/IndexBuffer.cpp src/Shader.h src/Shader.cpp)
 
 
 # Included these two lines:

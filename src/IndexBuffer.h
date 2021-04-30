@@ -16,6 +16,6 @@ public:
     void Bind() const;
     void Unbind() const;
 
-    inline unsigned int getCount() const { return m_Count;}
+    unsigned int getCount() const { return m_Count;}
 };
 #endif //HAND_IndexBUFFER_H

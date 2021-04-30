@@ -1,15 +1,3 @@
-#ifdef __APPLE__
-/* Defined before OpenGL and GLUT includes to avoid deprecation messages */
-#define GL_SILENCE_DEPRECATION
-#include <GLFW/glfw3.h>
-#include <OpenGL/gl.h>
-
-#else
-#include <GLFW/glfw3.h>
-#include <GL/gl.h>
-#include <GL/glut.h>
-#endif
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -17,81 +5,9 @@
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "Shader.h"
 
 using namespace std;
-
-struct ShaderSources
-{
-    string VertexSource;
-    string FragmentSource;
-};
-
-static ShaderSources parseShader(const string& filepath)
-{
-    std::ifstream stream(filepath);
-
-    enum class ShaderType  {NONE = -1, VERTEX = 0, FRAGMENT = 1};
-
-    string line;
-    std::stringstream ss[2];
-    ShaderType type = ShaderType::NONE;
-    while (getline(stream, line)) {
-        if (line.find("#shader") != std::string::npos) {
-            if (line.find("vertex") != std::string::npos) {
-                type = ShaderType::VERTEX;
-            } else if (line.find("fragment") != std::string::npos) {
-                type = ShaderType::FRAGMENT;
-            }
-        } else {
-            ss[(int)type] << line << endl;
-        }
-    }
-
-    return {ss[0].str(), ss[1].str()};
-}
-
-
-static unsigned int compileShader(unsigned int type, const string &source)
-{
-    unsigned int id = glCreateShader(type);
-    const char* src = source.c_str();
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
-
-    int result;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-    if (result == GL_FALSE) {
-        int length;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*) alloca(sizeof(char) * length);
-        glGetShaderInfoLog(id, length, &length, message);
-        cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << endl;
-        cout << message << endl;
-        glDeleteShader(id);
-        return 0;
-    }
-
-    return id;
-}
-
-static unsigned int  createShader(const string &vertexShaderCode, const string &fragmentShaderCode)
-{
-    unsigned int program = glCreateProgram();
-    unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderCode);
-    unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
-
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-    glValidateProgram(program);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    glDetachShader(program, vertexShader);
-    glDetachShader(program, fragmentShader);
-
-    return program;
-}
 
 int main()
 {
@@ -134,28 +50,24 @@ int main()
 
     IndexBuffer ib(indices, 6);
 
-    ShaderSources sources = parseShader("../res/shaders/basic.shader");
-    cout << "VERTEX" << endl;
-    cout << sources.VertexSource << endl;
-    cout << "FRAGMENT" << endl;
-    cout << sources.FragmentSource << endl;
-
-
-    unsigned int shader = createShader(sources.VertexSource, sources.FragmentSource);
-    glUseProgram(shader);
-
-    int location = glGetUniformLocation(shader, "u_Color");
-    assert(location != -1);
+    Shader shader("../res/shaders/basic.shader");
+    shader.Bind();
+    shader.setUniform4f("u_Color", 0.2f, 0.4f, 0.6f, 1.0f);
+    vb.Unbind();
+    ib.Unbind();
+    shader.Unbind();
     float r = 0.0f;
     float increment = 0.05f;
+    Renderer renderer;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer.Clear();
 
-        glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        shader.Bind();
+        shader.setUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+
+        renderer.Draw(vb, ib, shader);
 
         if (r > 1.0f || r < 0.0f)
             increment *= -1;
@@ -169,7 +81,6 @@ int main()
         glfwPollEvents();
     }
 
-    glDeleteProgram(shader);
     glfwTerminate();
     return 0;
 }
