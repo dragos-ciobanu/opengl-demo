@@ -43,12 +43,6 @@ void Shader::Unbind() const {
     glUseProgram(0);
 }
 
-void Shader::setUniform4f(const std::string &name, float v0, float v1, float v2, float v3) {
-    int location = getUniformLocation(name);
-    glUniform4f(location, v0, v1, v2, v3);
-};
-
-
 ShaderSources Shader::parseShader(const std::string& filepath)
 {
     std::ifstream stream(filepath);
@@ -114,4 +108,21 @@ unsigned int  Shader::createShader(const std::string& vertexShaderCode, const st
 
     return program;
 }
+
+void Shader::setUniform1f(const std::string &name, float val) {
+    glUniform1f(getUniformLocation(name), val);
+}
+
+void Shader::setUniform1i(const std::string &name, int val) {
+    glUniform1i(getUniformLocation(name), val);
+}
+
+void Shader::setUniform4f(const std::string &name, float v0, float v1, float v2, float v3) {
+    int location = getUniformLocation(name);
+    glUniform4f(location, v0, v1, v2, v3);
+}
+
+unsigned int Shader::getAttributeLocation(std::string name) {
+     return glGetAttribLocation(m_RendererId, name.c_str());
+};
 

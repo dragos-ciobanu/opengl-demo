@@ -6,6 +6,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
+#include "Texture.h"
 
 using namespace std;
 
@@ -35,33 +36,54 @@ int main()
 
     cout << glGetString(GL_VERSION) << endl;
     cout << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << endl;
+//    float positions[] = {
+//            -0.5f, -0.5f,
+//             0.5f, -0.5f,
+//             0.5f, 0.5f,
+//            -0.5f, 0.5f,
+//    };
     float positions[] = {
-            -0.5f, -0.5f,
-             0.5f, -0.5f,
-             0.5f, 0.5f,
-            -0.5f, 0.5f,
+            -0.5f, -0.5f,-0.8f, -0.8f,
+             0.5f, -0.5f, 0.8f, -0.8f,
+             0.5f, 0.5f,  0.8f, 0.8f,
+            -0.5f, 0.6f, -0.8f, 0.8f,
     };
     unsigned int indices[] = {
             0, 1, 2,
             2, 3, 0
     };
 
-    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+    VertexBuffer vb(positions, 4 * 4 * sizeof(float));
+//    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
     IndexBuffer ib(indices, 6);
 
     Shader shader("../res/shaders/basic.shader");
     shader.Bind();
+
     shader.setUniform4f("u_Color", 0.2f, 0.4f, 0.6f, 1.0f);
+
+    Texture texture("../res/textures/trek.png");
+    texture.Bind();
+    shader.setUniform1i("u_Texture", 0);
+
+    unsigned int positionLocation = shader.getAttributeLocation("v_pos");
+    unsigned int texLocation = shader.getAttributeLocation("v_texCoord");
+    glEnableVertexAttribArray(positionLocation);
+    glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, nullptr);
+    glEnableVertexAttribArray(texLocation);
+    glVertexAttribPointer(texLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)8);
+
+
+
     vb.Unbind();
     ib.Unbind();
     shader.Unbind();
     float r = 0.0f;
     float increment = 0.05f;
     Renderer renderer;
+
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {

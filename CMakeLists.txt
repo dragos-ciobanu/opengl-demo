@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "-framework Cocoa -framework IOKit")
 
 find_package(OpenGL REQUIRED)
 
-add_executable(hand src/app.cpp src/Renderer.h src/Renderer.cpp src/VertexBuffer.h src/VertexBuffer.cpp src/IndexBuffer.h src/IndexBuffer.cpp src/Shader.h src/Shader.cpp)
+add_executable(hand src/app.cpp src/Renderer.h src/Renderer.cpp src/VertexBuffer.h src/VertexBuffer.cpp src/IndexBuffer.h src/IndexBuffer.cpp src/Shader.h src/Shader.cpp vendor/stb_image/stb_image.h vendor/stb_image/stb_image.cpp src/Texture.h src/Texture.cpp)
 
 
 # Included these two lines:
