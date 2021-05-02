@@ -43,15 +43,18 @@ int main()
 //            -0.5f, 0.5f,
 //    };
     float positions[] = {
-            -0.5f, -0.5f,-0.8f, -0.8f,
-             0.5f, -0.5f, 0.8f, -0.8f,
-             0.5f, 0.5f,  0.8f, 0.8f,
-            -0.5f, 0.6f, -0.8f, 0.8f,
+            -0.5f, -0.5f, 0.0f, 0.0f,
+             0.5f, -0.5f, 1.0f, -0.0f,
+             0.5f, 0.5f,  1.0f, 1.0f,
+            -0.5f, 0.6f, -0.0f, 1.0f,
     };
     unsigned int indices[] = {
             0, 1, 2,
             2, 3, 0
     };
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 //    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
@@ -63,7 +66,7 @@ int main()
 
     shader.setUniform4f("u_Color", 0.2f, 0.4f, 0.6f, 1.0f);
 
-    Texture texture("../res/textures/trek.png");
+    Texture texture("../res/textures/ChernoLogoAlpha.png");
     texture.Bind();
     shader.setUniform1i("u_Texture", 0);
 
