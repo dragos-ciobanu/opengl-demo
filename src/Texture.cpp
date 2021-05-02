@@ -3,7 +3,7 @@
 //
 
 #include "Texture.h"
-#include "../vendor/stb_image/stb_image.h"
+#include "stb_image/stb_image.h"
 
 Texture::Texture(const std::string& path)
 :m_filePath(path), m_localBuffer(nullptr), m_height(0), m_width(0), m_BPP(0)

@@ -14,5 +14,5 @@ add_executable(hand src/app.cpp src/Renderer.h src/Renderer.cpp src/VertexBuffer
 
 
 # Included these two lines:
-target_include_directories(hand PUBLIC ${PROJECT_SOURCE_DIR}/vendor/GLFW/include ${OPENGL_INCLUDE_DIRS})
+target_include_directories(hand PUBLIC ${PROJECT_SOURCE_DIR}/vendor/GLFW/include ${OPENGL_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/vendor)
 target_link_libraries(hand ${OPENGL_LIBRARIES} ${PROJECT_SOURCE_DIR}/vendor/GLFW/lib/libglfw3.a)

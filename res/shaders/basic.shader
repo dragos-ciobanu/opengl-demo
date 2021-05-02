@@ -4,9 +4,10 @@
 varying vec2 outtexture;
 attribute vec2 v_pos;
 attribute vec2 v_texCoord;
+uniform mat4 u_MVP;
 
 void main() {
-    gl_Position = gl_ModelViewProjectionMatrix * vec4(v_pos, 0.0, 1.0);
+    gl_Position = u_MVP * vec4(v_pos, 0.0, 1.0);
     outtexture = v_texCoord;
 }
 #shader fragment

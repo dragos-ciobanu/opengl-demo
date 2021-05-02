@@ -8,6 +8,9 @@
 #include "Shader.h"
 #include "Texture.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 using namespace std;
 
 int main()
@@ -46,7 +49,7 @@ int main()
             -0.5f, -0.5f, 0.0f, 0.0f,
              0.5f, -0.5f, 1.0f, -0.0f,
              0.5f, 0.5f,  1.0f, 1.0f,
-            -0.5f, 0.6f, -0.0f, 1.0f,
+            -0.5f, 0.5f, -0.0f, 1.0f,
     };
     unsigned int indices[] = {
             0, 1, 2,
@@ -61,10 +64,13 @@ int main()
 
     IndexBuffer ib(indices, 6);
 
+    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, 1.5f, -1.5f);
+
     Shader shader("../res/shaders/basic.shader");
     shader.Bind();
 
     shader.setUniform4f("u_Color", 0.2f, 0.4f, 0.6f, 1.0f);
+    shader.setUniformMat4f("u_MVP", proj);
 
     Texture texture("../res/textures/ChernoLogoAlpha.png");
     texture.Bind();
