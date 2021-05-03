@@ -8,14 +8,14 @@ class IndexBuffer
 {
 private:
     unsigned int m_RendererId;
-    unsigned int m_Count;
+    int m_Count;
 public:
-    IndexBuffer(const unsigned int* data, unsigned int count);
+    IndexBuffer(const unsigned int* data, int count);
     ~IndexBuffer();
 
     void Bind() const;
     void Unbind() const;
 
-    unsigned int getCount() const { return m_Count;}
+    int getCount() const { return m_Count;}
 };
 #endif //HAND_IndexBUFFER_H

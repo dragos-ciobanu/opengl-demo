@@ -32,15 +32,15 @@ Shader::Shader(const std::string& filePath)
 }
 
 Shader::~Shader() {
-    glDeleteProgram(m_RendererId);
+    GLCall(glDeleteProgram(m_RendererId));
 }
 
 void Shader::Bind() const {
-    glUseProgram(m_RendererId);
+    GLCall(glUseProgram(m_RendererId));
 }
 
 void Shader::Unbind() const {
-    glUseProgram(0);
+    GLCall(glUseProgram(0));
 }
 
 ShaderSources Shader::parseShader(const std::string& filepath)
@@ -96,29 +96,29 @@ unsigned int  Shader::createShader(const std::string& vertexShaderCode, const st
     unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderCode);
     unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
 
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-    glValidateProgram(program);
+    GLCall(glAttachShader(program, vertexShader));
+    GLCall(glAttachShader(program, fragmentShader));
+    GLCall(glLinkProgram(program));
+    GLCall(glValidateProgram(program));
 
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    glDetachShader(program, vertexShader);
-    glDetachShader(program, fragmentShader);
+    GLCall(glDeleteShader(vertexShader));
+    GLCall(glDeleteShader(fragmentShader));
+    GLCall(glDetachShader(program, vertexShader));
+    GLCall(glDetachShader(program, fragmentShader));
 
     return program;
 }
 
 void Shader::setUniform1f(const std::string &name, float val) {
-    glUniform1f(getUniformLocation(name), val);
+    GLCall(glUniform1f(getUniformLocation(name), val));
 }
 
 void Shader::setUniform1i(const std::string &name, int val) {
-    glUniform1i(getUniformLocation(name), val);
+    GLCall(glUniform1i(getUniformLocation(name), val));
 }
 
 void Shader::setUniform4f(const std::string &name, float v0, float v1, float v2, float v3) {
-    glUniform4f(getUniformLocation(name), v0, v1, v2, v3);
+    GLCall(glUniform4f(getUniformLocation(name), v0, v1, v2, v3));
 }
 
 unsigned int Shader::getAttributeLocation(std::string name) {
@@ -126,6 +126,6 @@ unsigned int Shader::getAttributeLocation(std::string name) {
 }
 
 void Shader::setUniformMat4f(const std::string &name, const glm::mat4 &value) {
-    glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &value[0][0]);
+    GLCall(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &value[0][0]));
 };
 
