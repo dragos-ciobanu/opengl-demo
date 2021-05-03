@@ -23,13 +23,12 @@
 #ifdef _MSV_VER
 #define DEBUG_BREAK __debugbreak()
 #else
-#define DEBUG_BREAK __builtin_trap();
+#define DEBUG_BREAK __asm {int 3};
 #endif
 
-#define ASSERT(x) if (!(x)) DEBUG_BREAK;
 #define GLCall(x) GLClearError(); \
     x;                            \
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+    GLLogCall(#x, __FILE__, __LINE__)
 
 void GLClearError();
 bool GLLogCall(const char* function, const char* file, int line);

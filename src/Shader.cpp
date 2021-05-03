@@ -22,11 +22,11 @@ int Shader::getUniformLocation(const std::string& name) {
 Shader::Shader(const std::string& filePath)
 :m_filePath(filePath), m_RendererId(0)
 {
-    ShaderSources sources = parseShader(filePath);//"../res/shaders/basic.shader");
-    std::cout << "VERTEX" << std::endl;
-    std::cout << sources.VertexSource << std::endl;
-    std::cout << "FRAGMENT" << std::endl;
-    std::cout << sources.FragmentSource << std::endl;
+    ShaderSources sources = parseShader(filePath);
+//    std::cout << "VERTEX" << std::endl;
+//    std::cout << sources.VertexSource << std::endl;
+//    std::cout << "FRAGMENT" << std::endl;
+//    std::cout << sources.FragmentSource << std::endl;
 
     m_RendererId = createShader(sources.VertexSource, sources.FragmentSource);
 }
@@ -71,8 +71,8 @@ unsigned int Shader::compileShader(unsigned int type, const std::string& source)
 {
     unsigned int id = glCreateShader(type);
     const char* src = source.c_str();
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
+    GLCall(glShaderSource(id, 1, &src, nullptr));
+    GLCall(glCompileShader(id));
 
     int result;
     glGetShaderiv(id, GL_COMPILE_STATUS, &result);

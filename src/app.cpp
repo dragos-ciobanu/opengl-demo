@@ -95,7 +95,6 @@ int main()
     Shader shader("../res/shaders/basic.shader");
     shader.Bind();
 
-    shader.setUniform4f("u_Color", 0.2f, 0.4f, 0.6f, 1.0f);
     shader.setUniformMat4f("u_MVP", mvp);
 
     Texture texture("../res/textures/trek.png");
@@ -131,7 +130,7 @@ int main()
         // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
-
+        renderer.Clear();
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL2_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -184,7 +183,7 @@ int main()
 
         // Rendering
         ImGui::Render();
-        renderer.Clear();
+
 //        int display_w, display_h;
 //        glfwGetFramebufferSize(window, &display_w, &display_h);
 //        glViewport(0, 0, display_w, display_h);
