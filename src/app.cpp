@@ -65,12 +65,16 @@ int main()
     IndexBuffer ib(indices, 6);
 
     glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f);
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0,0));
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(100, 100, 0));
+
+    glm::mat4 mvp = proj * view * model;
 
     Shader shader("../res/shaders/basic.shader");
     shader.Bind();
 
     shader.setUniform4f("u_Color", 0.2f, 0.4f, 0.6f, 1.0f);
-    shader.setUniformMat4f("u_MVP", proj);
+    shader.setUniformMat4f("u_MVP", mvp);
 
     Texture texture("../res/textures/trek.png");
     texture.Bind();
