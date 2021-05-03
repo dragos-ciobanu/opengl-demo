@@ -11,15 +11,24 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-using namespace std;
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl2.h"
 
+using namespace std;
+static void glfw_error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+}
 int main()
 {
-    GLFWwindow* window;
-
+    glfwSetErrorCallback(glfw_error_callback);
     /* Initialize the library */
     if (!glfwInit())
-        return -1;
+        return 1;
+
+    GLFWwindow* window;
+
 
     /* Create a windowed mode window and its OpenGL context */
 //    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -29,12 +38,11 @@ int main()
     if (!window)
     {
         glfwTerminate();
-        return -1;
+        return 1;
     }
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-
     glfwSwapInterval(1);
 
     cout << glGetString(GL_VERSION) << endl;
@@ -45,6 +53,22 @@ int main()
 //             0.5f, 0.5f,
 //            -0.5f, 0.5f,
 //    };
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsClassic();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL2_Init();
+
     float positions[] = {
             100.0f, 100.0f, 0.0f, 0.0f,
              200.0f, 100.0f, 1.0f, 0.0f,
@@ -96,29 +120,58 @@ int main()
     float increment = 0.05f;
     Renderer renderer;
 
-
+    bool show_demo_window = true;
+    bool show_another_window = false;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        glfwPollEvents();
         renderer.Clear();
+
+
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL2_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+
 
         shader.Bind();
         shader.setUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
         renderer.Draw(vb, ib, shader);
 
-        if (r > 1.0f || r < 0.0f)
+        if (r > 1.0f || r < 0.0f) {
             increment *= -1;
+        }
 
         r += increment;
 
-        /* Swap front and back buffers */
+
+        ImGui::ShowDemoWindow(&show_demo_window);
+
+
+        // Rendering
+        ImGui::Render();
+
+        // If you are using this code with non-legacy OpenGL header/contexts (which you should not, prefer using imgui_impl_opengl3.cpp!!),
+        // you may need to backup/reset/restore other state, e.g. for current shader using the commented lines below.
+        GLint last_program;
+        glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
+        glUseProgram(0);
+        ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+        //glUseProgram(last_program);
+
+        glfwMakeContextCurrent(window);
         glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
     }
+    // Cleanup
+    ImGui_ImplOpenGL2_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }

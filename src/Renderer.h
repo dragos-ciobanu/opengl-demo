@@ -1,10 +1,11 @@
 //
 // Created by dragos on 28.04.21.
 //
-#define GL_SILENCE_DEPRECATION
+
 #ifdef __APPLE__
 /* Defined before OpenGL and GLUT includes to avoid deprecation messages */
 #define GL_SILENCE_DEPRECATION
+
 #include <GLFW/glfw3.h>
 #include <OpenGL/gl.h>
 #include "VertexBuffer.h"
